@@ -1,0 +1,16 @@
+span {
+  margin: 4px;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.todoList {
+  display: flex;
+  flex-direction: column;
+}
+.strikeText {
+  text-decoration: line-through;
+}
