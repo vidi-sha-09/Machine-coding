@@ -1,42 +1,64 @@
-let list = [];
+//V2
+list = [];
 
 const addItem = function () {
-  console.log(document.getElementById("item").value);
+  const inputElement = document.getElementById("item");
+  const inputText = inputElement.value.trim();
+  if (!inputText) return;
+
   let todo = {
     id: Date.now(),
-    text: document.getElementById("item").value,
+    text: inputText,
     completed: false,
   };
-  list.push(todo);
 
-  renderList(list);
+  console.log(inputText, todo);
+  list.push(todo);
+  renderListItem(todo);
+  inputElement.value = "";
 };
+
 const toggleTodo = function (id) {
   const item = list.find((t) => t.id === id);
   if (item) {
     item.completed = !item.completed;
-    renderList(list);
+    const spanToToggle = document.querySelector(`span[data-id='${id}']`);
+    if (spanToToggle) {
+      if (item.completed) spanToToggle.style.textDecoration = "line-through";
+      else spanToToggle.style.textDecoration = "";
+    }
   }
 };
+
 const deleteItem = function (id) {
   list = list.filter((t) => t.id !== id);
-  renderList(list);
+  const itemToDel = document.getElementById(`item-${id}`);
+  if (itemToDel) itemToDel.remove();
 };
-const renderList = function (list) {
-  let items = "";
-  for (let i = 0; i < list.length; i++) {
-    items += `
-    <li class="list-items">
-      <input type="checkbox" onchange="toggleTodo(${list[i].id})"  ${
-      list[i].completed ? "checked" : ""
-    }/>
-        <span style="${
-          list[i].completed ? "text-decoration: line-through" : ""
-        }">${list[i].text}</span>
-      <button onclick="deleteItem(${list[i].id})">Delete</button>
-    </li>`;
-  }
 
-  document.getElementById("to-do-list").innerHTML = items;
-  document.getElementById("item").value = "";
+const renderListItem = function (item) {
+  const listElement = document.getElementById("to-do-list");
+
+  const li = document.createElement("li");
+  li.className = "list-items";
+  li.id = `item-${item.id}`;
+
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = item.completed;
+  checkbox.addEventListener("change", () => toggleTodo(item.id));
+
+  const span = document.createElement("span");
+  span.textContent = item.text;
+  span.setAttribute("data-id", item.id);
+
+  const deleteButton = document.createElement("button");
+  deleteButton.textContent = "Delete";
+  deleteButton.addEventListener("click", () => deleteItem(item.id));
+
+  li.appendChild(checkbox);
+  li.appendChild(span);
+  li.appendChild(deleteButton);
+
+  listElement.appendChild(li);
 };
